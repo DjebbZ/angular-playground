@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html ng-app="commentApp">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ractive's comments example ported to Angular</title>
+    <link rel="stylesheet" href="bower_components/normalize-css/normalize.css">
+    <style>
+        h3, h4 {
+            font-family:'Voltaire';
+        }
+        h4 {
+            margin: 0;
+        }
+        .comment-block {
+            position: relative;
+            padding: 0 0 0 10em;
+        }
+        .comment-author {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 9em;
+            background-color: #eee;
+            padding: 0.5em;
+        }
+        .comment-text {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-top: 1px solid #eee;
+            padding: 0.5em 0.5em 0.5em 1em;
+            margin-bottom: 1em;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        .comment-text p:last-child {
+            margin: 0;
+        }
+        form {
+            position: relative;
+            padding: 0 0 0 10.5em;
+        }
+        .author-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: inherit;
+            font-family: inherit;
+            width: 10em;
+            padding: 0.5em;
+            margin: 0;
+            border: 1px solid #eee;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        textarea {
+            font-size: inherit;
+            font-family: inherit;
+            width: 100%;
+            height: 5em;
+            padding: 0.5em;
+            border: 1px solid #eee;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        input[type="submit"] {
+            /*appearance: none;*/
+            background-color: #729d34;
+            border: none;
+            padding: 0.5em;
+            font-size: inherit;
+            font-family:'Voltaire';
+            color: white;
+            opacity: 0.5;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover, input[type="submit"]:focus {
+            opacity: 1;
+            outline: none;
+        }
+    </style>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="vendor/showdown.js"></script>
+    <script>
+    angular
+        .module("commentApp", ['ngSanitize'])
+        .factory("comments", function() {
+            return [{
+                author: "DjebbZ",
+                text: "_Markdown_ ??"
+            }];
+        })
+        .controller("commentCtrl", function($scope, comments) {
+            $scope.comments = comments;
+
+            var converter = new Showdown.converter();
+
+            $scope.renderMarkdown = function(md) {
+                return converter.makeHtml(md);
+            };
+        })
+        .controller("commentFormCtrl", function($scope, comments) {
+            $scope.post = function(newComment) {
+                // angular.copy prevents binding between form data and comment list
+                comments.push(angular.copy(newComment));
+                // reset form
+                newComment.author = newComment.text = "";
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div class='comment-box' ng-controller="commentCtrl">
+        <h3>Comments</h3>
+
+        <!-- comment list -->
+        <div class='comment-list' ng-repeat="comment in comments">
+            <div class='comment-block' intro='slide'>
+                <h4 class='comment-author'>{{comment.author}}</h4>
+                <div class='comment-text' ng-bind-html="renderMarkdown(comment.text)"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 'new comment' form -->
+    <div ng-controller="commentFormCtrl">
+        <form name='comment-form' class='comment-form' ng-submit='post(newComment)'>
+
+            <!-- author name -->
+            <input class='author-input' ng-model='newComment.author' placeholder='Your name' required>
+
+            <!-- comment body -->
+            <textarea ng-model='newComment.text' placeholder='Say something...' required></textarea>
+
+            <!-- 'submit comment' button -->
+            <input type='submit' value='Submit comment'>
+        </form>
+    </div>
+
+</body>
+
+</html>
