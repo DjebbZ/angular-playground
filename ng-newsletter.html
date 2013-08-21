@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html ng-app="clockApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular-playground</title>
+    <link rel="stylesheet" href="bower_components/normalize-css/normalize.css">
+    <link rel="stylesheet" href="bower_components/bower-foundation-css/foundation.css">
+
+    <script src="bower_components/angular/angular.js"></script>
+    <script>
+    angular
+        .module('clockApp', [])
+        .controller('clockCtrl', function ($scope, $timeout) {
+            $scope.clock = new Date();
+
+            $timeout(function updateTime() {
+                $scope.clock = new Date();
+                $timeout(updateTime, 1000);
+            }, 1000);
+        })
+        .controller('addCtrl', function ($scope) {
+            $scope.amount = $scope.counter = 0;
+            $scope.add = function(amount) {
+              $scope.counter += parseInt(amount, 10);
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <section ng-controller="clockCtrl">
+        <header><h3>Clock App</h3></header>
+        <div>{{ clock }}</div>
+    </section>
+    <hr>
+    <section ng-controller="addCtrl">
+        <header><h3>Add machine</h3></header>
+        <input type="text" ng-model="amount">
+        <p>You're going to add {{amount}}</p>
+        <button ng-click="add(amount)">Add !</button>
+        <p>Counter : {{ counter }}</p>
+    </section>
+</body>
+</html>
