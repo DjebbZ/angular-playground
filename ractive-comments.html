@@ -92,6 +92,9 @@
             return [{
                 author: "DjebbZ",
                 text: "_Markdown_ ??"
+            }, {
+                author: "Obama",
+                text: "Yes you **can**"
             }];
         })
         .controller("commentCtrl", function($scope, comments) {
@@ -117,6 +120,7 @@
 <body>
     <div class='comment-box' ng-controller="commentCtrl">
         <h3>Comments</h3>
+        <p>Comments can be written in Markdown.</p>
 
         <!-- comment list -->
         <div class='comment-list' ng-repeat="comment in comments">
